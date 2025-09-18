@@ -1,0 +1,398 @@
+
+//question number 1 assignment 3
+#include<iostream>
+using namespace std;
+
+class stack{
+    int top =-1;
+    int arr[10];
+    public:
+    void push(int x){
+        if(isfull()){
+            cout<<"stack is full \n";
+            return;
+        }
+        else
+        top = top+1;
+        arr[top]=x;
+    }
+    void pop(){
+        if(isempty()){
+            cout<<"stack is empty \n";
+            return;
+        }
+        top = top-1;
+    }
+    bool isempty(){
+        if(top==-1){
+            
+            return true;
+        }
+        else 
+        return false;
+    }
+    bool isfull(){
+        if (top ==9){
+           
+            return true;
+        }
+        else
+        return false;
+    }
+  void display() {
+        if (isempty()) {
+            cout << "Stack  empty \n";
+            return;
+        }
+        cout << "Stack elements: ";
+        for (int i = top; i >= 0; i--) {   
+            cout << arr[i] << " ";
+        }
+        cout << endl;
+    }
+    int tope(){
+        if(isempty()){
+            cout<<"no element :\n";
+            return -1;
+        }
+        return arr[top];
+    }
+};
+
+int main() {
+    stack s;
+    int choice, value;
+
+    do {
+        cout << "\n--- MENU ---\n";
+        cout << "1. Push\n";
+        cout << "2. Pop\n";
+        cout << "3. isEmpty\n";
+        cout << "4. isFull\n";
+        cout << "5. Display\n";
+        cout << "6. Peek (Top element)\n";
+        cout << "7. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter value to push: ";
+                cin >> value;
+                s.push(value);
+                break;
+            case 2:
+                s.pop();
+                break;
+            case 3:
+                if (s.isempty())
+                    cout << "Stack is empty.\n";
+                else
+                    cout << "Stack is not empty.\n";
+                break;
+            case 4:
+                if (s.isfull())
+                    cout << "Stack is full.\n";
+                else
+                    cout << "Stack is not full.\n";
+                break;
+            case 5:
+                s.display();
+                break;
+            case 6:
+                s.tope();
+                break;
+            case 7:
+                cout << "Exiting program...\n";
+                break;
+            default:
+                cout << "Invalid choice! Try again.\n";
+        }
+    } while (choice != 7);
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+q2 assignment 3
+# include<iostream>
+#include<string>
+using namespace std;
+
+class stacks{
+  int top = -1;
+  char str[30];
+  
+  public:
+  
+  void push (char x){
+      if(top>=29){
+          return;
+      }
+      top = top+1;
+      str[top]=x;
+  }
+  
+  void pop(){
+      if (top == -1){
+          return ;
+      }
+      else 
+      top = top -1;
+  }
+  
+  char tope(){
+      if (top <= -1){
+          return 0;
+      }
+      return str[top];
+  }
+};
+
+int main(){
+    stacks s;
+    string input ;
+    cout<<"enter a string input : ";
+    cin>>input;
+    
+    for(int i = 0 ; i<input.size(); i++){
+        
+        s.push(input[i]);
+    }
+    for(int i = 0 ; i<input.size();i++){
+        cout<<s.tope();
+        s.pop();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+q3 assignment 3
+
+#include<iostream>
+#include<stack>
+using namespace std ;
+
+bool b(string s) {
+	stack<char>st;
+
+	for(int i = 0 ; i<s.size(); i++) {
+	    
+		if(s[i]=='('||s[i]=='{'||s[i]=='[') {
+			st.push(s[i]);
+		}
+		if(s[i]=='}'||s[i]==')'||s[i]==']') {
+		    
+			char y = st.top();
+			st.pop();
+			
+			if((y=='(' && s[i]==')')||( y=='{' && s[i]=='}' )||(y=='[' && s[i]==']')) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+	}
+   
+    
+}
+int main(){
+    string str;
+    cout<<"ENTER PARENTHEIS EQUATION : ";
+    cin>>str;
+    
+  if(b(str)){
+      cout<<"balanced";
+  }
+  else{
+      cout<<"not balanced ";
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+q4 assignment 3
+#include <iostream>
+#include <stack>
+#include <string>
+using namespace std;
+
+
+int priority(char op) {
+    if (op == '^') return 3;
+    if (op == '*' || op == '/') return 2;
+    if (op == '+' || op == '-') return 1;
+    return 0;
+}
+
+string infixtopostfix(string s) {
+    int i = 0;
+    stack<char> st;
+    string ans = "";
+
+    while (i < s.length()) {
+        if ((s[i] >= 'A' && s[i] <= 'Z') ||
+            (s[i] >= 'a' && s[i] <= 'z') ||
+            (s[i] >= '0' && s[i] <= '9')) {
+            ans = ans + s[i];
+        }
+        else if (s[i] == '(') {
+            st.push(s[i]);
+        }
+        else if (s[i] == ')') {
+            while (!st.empty() && st.top() != '(') {
+                ans = ans + st.top();
+                st.pop();
+            }
+            if (!st.empty()) st.pop();
+        }
+        else {
+            while (!st.empty() && priority(s[i]) <= priority(st.top())) {
+                ans = ans + st.top();
+                st.pop();
+            }
+            st.push(s[i]);
+        }
+
+        i++; 
+    }
+
+    while (!st.empty()) {
+        ans = ans + st.top();
+        st.pop();
+    }
+
+    return ans;
+}
+
+int main() {
+    string input;
+    cout << "Enter infix expression: ";
+    cin >> input;
+
+    cout << "Postfix: " << infixtopostfix(input) << endl;
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+q5 assignment 3
+#include <iostream>
+#include <stack>
+#include <string>
+using namespace std;
+//converts postfix to infinix dont know how to calculate
+int main() {
+    string postfix;
+    cout << "Enter postfix expression: ";
+    cin >> postfix;
+
+    stack<string> s;
+
+    for (int i = 0; i < postfix.length(); i++) {
+        char ch = postfix[i];
+
+        
+        if ((ch >= '0' && ch <= '9') || (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z')) {
+            string operand(1, ch); 
+            s.push(operand);
+        }
+        
+        else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+            string op2 = s.top(); s.pop(); 
+            string op1 = s.top(); s.pop(); 
+            string expr = "(" + op1 + ch + op2 + ")"; 
+            s.push(expr); 
+        }
+    }
+
+    
+    cout << "Infix expression: " << s.top() << endl;
+
+    return 0;
+}
