@@ -1,0 +1,135 @@
+
+q1
+#include <iostream>
+using namespace std;
+
+
+void menuArray() {
+    int arr[MAX], n=0, choice, pos, val;
+    do {
+        cout << "\n1.CREATE 2.DISPLAY 3.INSERT 4.DELETE 5.LINEAR SEARCH 6.EXIT\n";
+        cin >> choice;
+        switch(choice) {
+            case 1:
+                cin >> n;
+                for(int i=0;i<n;i++) cin >> arr[i];
+                break;
+            case 2:
+                for(int i=0;i<n;i++) cout << arr[i] << " ";
+                cout << endl;
+                break;
+            case 3:
+                cin >> pos >> val;
+                if(pos>=0 && pos<=n){
+                    for(int i=n;i>pos;i--) arr[i]=arr[i-1];
+                    arr[pos]=val; n++;
+                }
+                break;
+            case 4:
+                cin >> pos;
+                if(pos>=0 && pos<n){
+                    for(int i=pos;i<n-1;i++) arr[i]=arr[i+1];
+                    n--;
+                }
+                break;
+            case 5:
+                cin >> val;
+                {
+                    int found=-1;
+                    for(int i=0;i<n;i++) if(arr[i]==val){found=i; break;}
+                    cout << found << endl;
+                }
+                break;
+        }
+    } 
+
+q2
+void removeDuplicates() {
+    int arr[MAX], n;
+    cin >> n;
+    for(int i=0;i<n;i++) cin >> arr[i];
+
+    int size = n;
+    for(int i=0;i<size;i++){
+        for(int j=i+1;j<size;j++){
+            if(arr[i]==arr[j]){
+                for(int k=j;k<size-1;k++) arr[k]=arr[k+1];
+                size--; j--;
+            }
+        }
+    }
+    for(int i=0;i<size;i++) cout << arr[i] << " ";
+    cout << endl;
+}
+
+q4
+void arrayOperations() {
+    // a) Reverse
+    int arr[10], n;
+    cin >> n;
+    for(int i=0;i<n;i++) cin >> arr[i];
+    for(int i=n-1;i>=0;i--) cout << arr[i] << " ";
+    cout << endl;
+
+    // b) Matrix multiplication
+    int r1,c1,r2,c2;
+    cin >> r1 >> c1;
+    int a[10][10];
+    for(int i=0;i<r1;i++) for(int j=0;j<c1;j++) cin >> a[i][j];
+    cin >> r2 >> c2;
+    int b[10][10];
+    for(int i=0;i<r2;i++) for(int j=0;j<c2;j++) cin >> b[i][j];
+
+    int res[10][10]={0};
+    if(c1==r2){
+        for(int i=0;i<r1;i++)
+            for(int j=0;j<c2;j++)
+                for(int k=0;k<c1;k++)
+                    res[i][j]+=a[i][k]*b[k][j];
+        for(int i=0;i<r1;i++){
+            for(int j=0;j<c2;j++) cout << res[i][j] << " ";
+            cout << endl;
+        }
+    }
+
+    // c) Transpose
+    int m,n2;
+    cin >> m >> n2;
+    int mat[10][10];
+    for(int i=0;i<m;i++) for(int j=0;j<n2;j++) cin >> mat[i][j];
+    for(int i=0;i<n2;i++){
+        for(int j=0;j<m;j++) cout << mat[j][i] << " ";
+        cout << endl;
+    }
+}
+
+q5
+void sumRowsCols() {
+    int m,n;
+    cin >> m >> n;
+    int mat[10][10];
+    for(int i=0;i<m;i++) for(int j=0;j<n;j++) cin >> mat[i][j];
+
+    for(int i=0;i<m;i++){
+        int sum=0;
+        for(int j=0;j<n;j++) sum+=mat[i][j];
+        cout << sum << " ";
+    }
+    cout << endl;
+
+    for(int j=0;j<n;j++){
+        int sum=0;
+        for(int i=0;i<m;i++) sum+=mat[i][j];
+        cout << sum << " ";
+    }
+    cout << endl;
+}
+
+
+int main() {
+    menuArray();
+    removeDuplicates();
+    arrayOperations();
+    sumRowsCols();
+    return 0;
+}
