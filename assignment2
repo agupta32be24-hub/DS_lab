@@ -1,0 +1,378 @@
+
+q1
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int arr[] = {11, 12, 22, 25, 34, 64, 90};  // sorted array
+    int n = 7;
+    int key;
+
+    cout << "Enter number to search: ";
+    cin >> key;
+
+    // Linear Search
+    int pos = -1;
+    for (int i = 0; i < n; i++) {
+        if (arr[i] == key) {
+            pos = i;
+            break;
+        }
+    }
+    if (pos != -1)
+        cout << "Linear Search: Found at position " << pos << endl;
+    else
+        cout << "Linear Search: Not found" << endl;
+
+    // Binary Search
+    int low = 0, high = n - 1;
+    pos = -1;
+    while (low <= high) {
+        int mid = (low + high) / 2;
+
+        if (arr[mid] == key) {
+            pos = mid;
+            break;
+        } else if (arr[mid] < key) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+
+    if (pos != -1)
+        cout << "Binary Search: Found at position " << pos << endl;
+    else
+        cout << "Binary Search: Not found" << endl;
+
+    return 0;
+}
+
+
+
+q2
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int arr[] = {64, 34, 25, 12, 22, 11, 90};
+    int n = 7;
+
+    
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+
+    cout << "Sorted numbers: ";
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+
+ 3) Find Missing Number
+
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int a[100], n, sum = 0, full;
+
+    cout << "Enter number of elements (one missing): ";
+    cin >> n;
+
+    cout << "Enter elements:\n";
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+        sum += a[i];
+    }
+
+    full = (n + 1) * (n + 2) / 2;
+
+    cout << "Missing number: " << full - sum << endl;
+
+    return 0;
+}
+
+
+
+q4
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string str1, str2;
+    cout << "Enter first string: ";
+  cin>>str1;
+    cout << "Enter second string: ";
+    cin>>str2;
+
+    str1 = str1 + str2;  
+
+    cout << "Concatenated string: " << str1 << endl;
+    return 0;
+}
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string str;
+    cout << "Enter a string: ";
+    cin>>str;
+
+    int n = str.size();
+    for (int i = 0; i < n / 2; i++) {
+        swap(str[i], str[n - i - 1]);
+    }
+
+    cout << "Reversed string: " << str << endl;
+    return 0;
+}
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string str;
+    cout << "Enter a string: ";
+    cin>>str;
+
+    string result = "";
+    for (int i = 0; i < str.length(); i++) {
+        if (str[i] != 'a' && str[i] != 'e' && str[i] != 'i' &&
+            str[i] != 'o' && str[i] != 'u' &&
+            str[i] != 'A' && str[i] != 'E' && str[i] != 'I' &&
+            str[i] != 'O' && str[i] != 'U') 
+        {
+            result = result + str[i];
+        }
+    }
+
+    cout << "String without vowels: " << result << endl;
+    return 0;
+}
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    int n;
+    cout << "Enter number of strings: ";
+    cin >> n;
+    cin.ignore();
+
+    string str[50];  
+    cout << "Enter " << n << " strings:\n";
+    for (int i = 0; i < n; i++) {
+        cin>>str[i];
+    }
+
+    
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (str[i] > str[j]) {
+                string temp = str[i];
+                str[i] = str[j];
+                str[j] = temp;
+            }
+        }
+    }
+
+    cout << "Strings in alphabetical order:\n";
+    for (int i = 0; i < n; i++) {
+        cout << str[i] << endl;
+    }
+
+    return 0;
+}
+#include <iostream>
+using namespace std;
+
+int main() {
+    char ch;
+    cout << "Enter an uppercase character: ";
+    cin >> ch;
+
+    if (ch >= 'A' && ch <= 'Z') {
+        ch = ch + 32;  
+    }
+
+    cout << "Lowercase character: " << ch << endl;
+    return 0;
+}
+
+
+// 5) Matrix Operations
+//
+// Q1 – Transpose of a Matrix
+
+int main() {
+    int r, c;
+    cin >> r >> c;
+    int a[r][c], t[c][r];
+    for(int i=0;i<r;i++)
+        for(int j=0;j<c;j++)
+            cin >> a[i][j];
+
+    for(int i=0;i<r;i++)
+        for(int j=0;j<c;j++)
+            t[j][i] = a[i][j];
+
+    cout << "Transpose:\n";
+    for(int i=0;i<c;i++){
+        for(int j=0;j<r;j++)
+            cout << t[i][j] << " ";
+        cout << endl;
+    }
+
+    // Q2 – Lower Triangular Matrix
+    int n;
+    cin >> n;
+    int b[n][n];
+    for(int i=0;i<n;i++)
+        for(int j=0;j<n;j++)
+            cin >> b[i][j];
+
+    cout << "Lower Triangular Matrix:\n";
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(j<=i)
+                cout << b[i][j] << " ";
+            else
+                cout << "0 ";
+        }
+        cout << endl;
+    }
+
+    // Q3 – Upper Triangular Matrix
+    int cmat[n][n];
+    for(int i=0;i<n;i++)
+        for(int j=0;j<n;j++)
+            cin >> cmat[i][j];
+
+    cout << "Upper Triangular Matrix:\n";
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(j>=i)
+                cout << cmat[i][j] << " ";
+            else
+                cout << "0 ";
+        }
+        cout << endl;
+    }
+
+    // Q4 – Diagonal Matrix (store only diagonal)
+    int d[n][n];
+    for(int i=0;i<n;i++)
+        for(int j=0;j<n;j++)
+            cin >> d[i][j];
+
+    cout << "Diagonal Matrix (only diagonals stored):\n";
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(i==j)
+                cout << d[i][j] << " ";
+            else
+                cout << "0 ";
+        }
+        cout << endl;
+    }
+
+    // Q5 – Symmetric Matrix
+    int s[n][n];
+    for(int i=0;i<n;i++)
+        for(int j=0;j<n;j++)
+            cin >> s[i][j];
+
+    cout << "Symmetric Matrix:\n";
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(i>=j)
+                cout << s[i][j] << " ";
+            else
+                cout << s[j][i] << " "; // copy lower triangle to upper
+        }
+        cout << endl;
+    }
+
+    return 0;
+}
+
+// Q6 – Sparse Matrix operations (Transpose using Triplet)
+int main() {
+    int rows, cols, terms;
+    cin >> rows >> cols >> terms;
+
+    int triplet[terms][3];
+    for(int i=0;i<terms;i++)
+        cin >> triplet[i][0] >> triplet[i][1] >> triplet[i][2];
+
+    int trans[terms][3];
+    trans[0][0] = triplet[0][1];
+    trans[0][1] = triplet[0][0];
+    trans[0][2] = triplet[0][2];
+
+    int t=1;
+    for(int col=0; col<cols; col++)
+        for(int i=1;i<terms;i++)
+            if(triplet[i][1]==col){
+                trans[t][0]=triplet[i][1];
+                trans[t][1]=triplet[i][0];
+                trans[t][2]=triplet[i][2];
+                t++;
+            }
+
+    for(int i=0;i<terms;i++)
+        cout << trans[i][0] << " " << trans[i][1] << " " << trans[i][2] << endl;
+
+
+// Q7 – Count inversions in an array
+    int n;
+    cin >> n;
+    int a[n];
+    for(int i=0;i<n;i++)
+        cin >> a[i];
+
+    int count=0;
+    for(int i=0;i<n-1;i++)
+        for(int j=i+1;j<n;j++)
+            if(a[i]>a[j])
+                count++;
+
+    cout << "Q7 Inversions: " << count << endl;
+
+
+// Q8 – Count distinct elements in an array (no set)
+    cin >> n;
+    for(int i=0;i<n;i++)
+        cin >> a[i];
+
+    int distinct=0;
+    for(int i=0;i<n;i++){
+        int flag=0;
+        for(int j=0;j<i;j++)
+            if(a[i]==a[j]){
+                flag=1;
+                break;
+            }
+        if(flag==0)
+            distinct++;
+    }
+
+    cout << "Q8 Distinct elements: " << distinct << endl;
+
+    return 0;
+}
