@@ -1,0 +1,393 @@
+
+#include <iostream>
+#include <cstdlib>
+#include <string>
+
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+void insBeg(Node** head, int val) {
+    Node* newNode = new Node;
+    newNode->data = val;
+    newNode->next = *head;
+    *head = newNode;
+}
+
+void insEnd(Node** head, int val) {
+    Node* newNode = new Node;
+    newNode->data = val;
+    newNode->next = nullptr;
+
+    if (*head == nullptr) {
+        *head = newNode;
+        return;
+    }
+
+    Node* temp = *head;
+    while (temp->next != nullptr) {
+        temp = temp->next;
+    }
+    temp->next = newNode;
+}
+
+void insBet(Node** head, int newVal, int refVal, bool after) {
+    if (*head == nullptr) return;
+
+    Node* curr = *head;
+    Node* prev = nullptr;
+
+    while (curr != nullptr && curr->data != refVal) {
+        prev = curr;
+        curr = curr->next;
+    }
+
+    if (curr == nullptr) return;
+
+    Node* newNode = new Node;
+    newNode->data = newVal;
+
+    if (after) {
+        newNode->next = curr->next;
+        curr->next = newNode;
+    } else {
+        if (prev == nullptr) { // Insert before head
+            newNode->next = *head;
+            *head = newNode;
+        } else {
+            newNode->next = curr;
+            prev->next = newNode;
+        }
+    }
+}
+
+void delBeg(Node** head) {
+    if (*head == nullptr) return;
+    Node* temp = *head;
+    *head = (*head)->next;
+    delete temp;
+}
+
+void delEnd(Node** head) {
+    if (*head == nullptr) return;
+    if ((*head)->next == nullptr) {
+        delete *head;
+        *head = nullptr;
+        return;
+    }
+
+    Node* curr = *head;
+    Node* prev = nullptr;
+    while (curr->next != nullptr) {
+        prev = curr;
+        curr = curr->next;
+    }
+    prev->next = nullptr;
+    delete curr;
+}
+
+void delNode(Node** head, int val) {
+    Node* curr = *head;
+    Node* prev = nullptr;
+
+    if (curr != nullptr && curr->data == val) {
+        *head = curr->next;
+        delete curr;
+        return;
+    }
+
+    while (curr != nullptr && curr->data != val) {
+        prev = curr;
+        curr = curr->next;
+    }
+
+    if (curr == nullptr) return;
+
+    prev->next = curr->next;
+    delete curr;
+}
+
+void search(Node* head, int val) {
+    Node* curr = head;
+    int pos = 1;
+    while (curr != nullptr) {
+        if (curr->data == val) {
+            cout << "Node " << val << " found at position " << pos << ".\n";
+            return;
+        }
+        curr = curr->next;
+        pos++;
+    }
+    cout << "Node " << val << " not found.\n";
+}
+
+void display(Node* head) {
+    Node* curr = head;
+    if (curr == nullptr) {
+        cout << "List is empty.\n";
+        return;
+    }
+    cout << "List: ";
+    while (curr != nullptr) {
+        cout << curr->data << " -> ";
+        curr = curr->next;
+    }
+    cout << "NULL\n";
+}
+
+int mainQ1() {
+    Node* head = nullptr;
+    int choice, val, refVal, newVal;
+    bool after;
+
+    do {
+        cout << "\n--- SLL Menu ---\n";
+        cout << "1. Insert at Beginning\n";
+        cout << "2. Insert at End\n";
+        cout << "3. Insert Between (Before/After)\n";
+        cout << "4. Delete from Beginning\n";
+        cout << "5. Delete from End\n";
+        cout << "6. Delete Specific Node\n";
+        cout << "7. Search Node\n";
+        cout << "8. Display List\n";
+        cout << "9. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: cout << "Val: "; cin >> val; insBeg(&head, val); break;
+            case 2: cout << "Val: "; cin >> val; insEnd(&head, val); break;
+            case 3: 
+                cout << "New Val: "; cin >> newVal;
+                cout << "Ref Val: "; cin >> refVal;
+                cout << "Insert After (1/0): "; cin >> after;
+                insBet(&head, newVal, refVal, after);
+                break;
+            case 4: delBeg(&head); break;
+            case 5: delEnd(&head); break;
+            case 6: cout << "Val to Delete: "; cin >> val; delNode(&head, val); break;
+            case 7: cout << "Val to Search: "; cin >> val; search(head, val); break;
+            case 8: display(head); break;
+            case 9: break;
+            default: cout << "Invalid choice.\n";
+        }
+    } while (choice != 9);
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+q2
+
+#include <iostream>
+#include <cstdlib>
+#include <string>
+
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+void display(Node* head) {
+    Node* curr = head;
+    if (curr == nullptr) {
+        cout << "List is empty.\n";
+        return;
+    }
+    cout << "List: ";
+    while (curr != nullptr) {
+        cout << curr->data << " -> ";
+        curr = curr->next;
+    }
+    cout << "NULL\n";
+}
+void cntDel(Node** head, int key) {
+    int count = 0;
+    Node* dummy = new Node;
+    dummy->next = *head;
+    Node* prev = dummy;
+    Node* curr = *head;
+
+    while (curr != nullptr) {
+        if (curr->data == key) {
+            count++;
+            Node* temp = curr;
+            prev->next = curr->next;
+            curr = curr->next;
+            delete temp;
+        } else {
+            prev = curr;
+            curr = curr->next;
+        }
+    }
+
+    *head = dummy->next;
+    delete dummy;
+    
+    cout << "Count: " << count << endl;
+}
+
+int mainQ2() {
+    Node* head = new Node{1, new Node{2, new Node{1, new Node{2, new Node{1, new Node{3, new Node{1, nullptr}}}}}}};
+    int key = 1;
+    
+    cout << "Original List: ";
+    display(head);
+
+    cntDel(&head, key);
+    
+    cout << "Updated List: ";
+    display(head);
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+q3
+
+
+
+
+#include <iostream>
+#include <cstdlib>
+#include <string>
+
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+void display(Node* head) {
+    Node* curr = head;
+    if (curr == nullptr) {
+        cout << "List is empty.\n";
+        return;
+    }
+    cout << "List: ";
+    while (curr != nullptr) {
+        cout << curr->data << " -> ";
+        curr = curr->next;
+    }
+    cout << "NULL\n";
+}
+int findMid(Node* head) {
+    if (head == nullptr) return -1;
+
+    Node* slow = head;
+    Node* fast = head;
+
+    while (fast != nullptr && fast->next != nullptr) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    return slow->data;
+}
+
+int main() {
+    Node* head = new Node{1, new Node{2, new Node{3, new Node{4, new Node{5, nullptr}}}}} ;
+    
+    cout << "List: ";
+    display(head);
+    
+    int middle = findMid(head);
+    
+    cout << "Output: " << middle << endl;
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+q4
+
+
+
+
+#include <iostream>
+#include <cstdlib>
+#include <string>
+
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+void display(Node* head) {
+    Node* curr = head;
+    if (curr == nullptr) {
+        cout << "List is empty.\n";
+        return;
+    }
+    cout << "List: ";
+    while (curr != nullptr) {
+        cout << curr->data << " -> ";
+        curr = curr->next;
+    }
+    cout << "NULL\n";
+}
+Node* revList(Node* head) {
+    Node* prev = nullptr;
+    Node* curr = head;
+    Node* next = nullptr;
+
+    while (curr != nullptr) {
+        next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
+    }
+
+    return prev;
+}
+
+int mainQ4() {
+    Node* head = new Node{1, new Node{2, new Node{3, new Node{4, nullptr}}}};
+    
+    cout << "Input: ";
+    display(head);
+    
+    head = revList(head);
+    
+    cout << "Output: ";
+    display(head);
+
+    return 0;
+}
