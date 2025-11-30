@@ -1,0 +1,308 @@
+#include <iostream>
+using namespace std;
+
+// Q1. Menu-driven operations on Doubly and Circular Linked List
+class DoublyCircularLinkedList {
+public:
+    struct Node {
+        int data;
+        Node* prev;
+        Node* next;
+    };
+    Node* head;
+    DoublyCircularLinkedList() { head = nullptr; }
+
+    void insertAtBeginning(int val) {
+        Node* newNode = new Node{val, nullptr, nullptr};
+        if (!head) {
+            newNode->next = newNode->prev = newNode;
+            head = newNode;
+        } else {
+            Node* tail = head->prev;
+            newNode->next = head;
+            newNode->prev = tail;
+            head->prev = tail->next = newNode;
+            head = newNode;
+        }
+    }
+
+    void insertAtEnd(int val) {
+        Node* newNode = new Node{val, nullptr, nullptr};
+        if (!head) {
+            newNode->next = newNode->prev = newNode;
+            head = newNode;
+        } else {
+            Node* tail = head->prev;
+            tail->next = newNode;
+            newNode->prev = tail;
+            newNode->next = head;
+            head->prev = newNode;
+        }
+    }
+
+    void insertAfter(int target, int val) {
+        if (!head) return;
+        Node* curr = head;
+        do {
+            if (curr->data == target) {
+                Node* newNode = new Node{val, curr, curr->next};
+                curr->next->prev = newNode;
+                curr->next = newNode;
+                return;
+            }
+            curr = curr->next;
+        } while (curr != head);
+    }
+
+    void insertBefore(int target, int val) {
+        if (!head) return;
+        Node* curr = head;
+        do {
+            if (curr->data == target) {
+                Node* newNode = new Node{val, curr->prev, curr};
+                curr->prev->next = newNode;
+                curr->prev = newNode;
+                if (curr == head) head = newNode;
+                return;
+            }
+            curr = curr->next;
+        } while (curr != head);
+    }
+
+    void deleteNode(int val) {
+        if (!head) return;
+        Node* curr = head;
+        do {
+            if (curr->data == val) {
+                if (curr->next == curr) { // single node
+                    head = nullptr;
+                } else {
+                    curr->prev->next = curr->next;
+                    curr->next->prev = curr->prev;
+                    if (curr == head) head = curr->next;
+                }
+                delete curr;
+                return;
+            }
+            curr = curr->next;
+        } while (curr != head);
+    }
+
+    Node* search(int val) {
+        if (!head) return nullptr;
+        Node* curr = head;
+        do {
+            if (curr->data == val) return curr;
+            curr = curr->next;
+        } while (curr != head);
+        return nullptr;
+    }
+
+    void display() {
+        if (!head) return;
+        Node* curr = head;
+        do {
+            cout << curr->data << " ";
+            curr = curr->next;
+        } while (curr != head);
+        cout << head->data << "\n";
+    }
+
+    int size() {
+        if (!head) return 0;
+        int count = 0;
+        Node* curr = head;
+        do {
+            count++;
+            curr = curr->next;
+        } while (curr != head);
+        return count;
+    }
+};
+
+int main() {
+    DoublyCircularLinkedList list;
+    int choice, val, target;
+    do {
+        cout << "\n1.Insert Beginning 2.Insert End 3.Insert After 4.Insert Before 5.Delete 6.Search 7.Display 8.Size 0.Exit\nChoice: ";
+        cin >> choice;
+        switch(choice) {
+            case 1:
+                cin >> val; list.insertAtBeginning(val); break;
+            case 2:
+                cin >> val; list.insertAtEnd(val); break;
+            case 3:
+                cin >> target >> val; list.insertAfter(target, val); break;
+            case 4:
+                cin >> target >> val; list.insertBefore(target, val); break;
+            case 5:
+                cin >> val; list.deleteNode(val); break;
+            case 6:
+                cin >> val;
+                if(list.search(val)) cout << "Found\n";
+                else cout << "Not Found\n";
+                break;
+            case 7:
+                list.display(); break;
+            case 8:
+                cout << "Size: " << list.size() << "\n"; break;
+        }
+    } while(choice != 0);
+    return 0;
+}
+
+------------------------------------------------------------
+
+// Q2. Display Circular Linked List with head repeated at end
+#include <iostream>
+using namespace std;
+
+class CircularList {
+public:
+    struct Node { int data; Node* next; };
+    Node* head;
+    CircularList() { head = nullptr; }
+
+    void insertEnd(int val) {
+        Node* newNode = new Node{val, nullptr};
+        if (!head) { head = newNode; newNode->next = newNode; return; }
+        Node* tail = head;
+        while (tail->next != head) tail = tail->next;
+        tail->next = newNode; newNode->next = head;
+    }
+
+    void display() {
+        if (!head) return;
+        Node* curr = head;
+        do { cout << curr->data << " "; curr = curr->next; } while (curr != head);
+        cout << head->data << "\n";
+    }
+};
+
+int main() {
+    CircularList cl;
+    int n, val;
+    cin >> n;
+    for(int i=0;i<n;i++){cin>>val; cl.insertEnd(val);}
+    cl.display();
+    return 0;
+}
+
+------------------------------------------------------------
+
+// Q3. Size of Doubly Linked List and Circular Linked List
+#include <iostream>
+using namespace std;
+
+class DLL {
+public:
+    struct Node { int data; Node* prev; Node* next; };
+    Node* head; DLL() { head = nullptr; }
+    void insertEnd(int val) {
+        Node* newNode = new Node{val, nullptr, nullptr};
+        if(!head){head=newNode; return;}
+        Node* curr=head;
+        while(curr->next) curr=curr->next;
+        curr->next=newNode; newNode->prev=curr;
+    }
+    int size() { int c=0; Node* curr=head; while(curr){c++; curr=curr->next;} return c;}
+};
+
+class CLL {
+public:
+    struct Node{ int data; Node* next; };
+    Node* head; CLL(){head=nullptr;}
+    void insertEnd(int val){
+        Node* newNode=new Node{val,nullptr};
+        if(!head){head=newNode; newNode->next=newNode; return;}
+        Node* tail=head;
+        while(tail->next!=head) tail=tail->next;
+        tail->next=newNode; newNode->next=head;
+    }
+    int size(){
+        if(!head) return 0;
+        int c=0; Node* curr=head;
+        do{c++; curr=curr->next;} while(curr!=head);
+        return c;
+    }
+};
+
+int main(){
+    DLL dll; CLL cll;
+    int n,val;
+    cin>>n;
+    for(int i=0;i<n;i++){cin>>val; dll.insertEnd(val); cll.insertEnd(val);}
+    cout<<"DLL size: "<<dll.size()<<"\n";
+    cout<<"CLL size: "<<cll.size()<<"\n";
+    return 0;
+}
+
+------------------------------------------------------------
+
+// Q4. Check if doubly linked list of characters is palindrome
+#include <iostream>
+using namespace std;
+
+class DLLChar {
+public:
+    struct Node{ char data; Node* prev; Node* next; };
+    Node* head; DLLChar(){head=nullptr;}
+    void insertEnd(char c){
+        Node* newNode=new Node{c,nullptr,nullptr};
+        if(!head){head=newNode; return;}
+        Node* curr=head; while(curr->next) curr=curr->next;
+        curr->next=newNode; newNode->prev=curr;
+    }
+    bool isPalindrome(){
+        if(!head) return true;
+        Node* left=head; Node* right=head;
+        while(right->next) right=right->next;
+        while(left!=right && left->prev!=right){
+            if(left->data!=right->data) return false;
+            left=left->next; right=right->prev;
+        }
+        return true;
+    }
+};
+
+int main(){
+    DLLChar dll; string s; cin>>s;
+    for(char c:s) dll.insertEnd(c);
+    if(dll.isPalindrome()) cout<<"Palindrome\n";
+    else cout<<"Not Palindrome\n";
+    return 0;
+}
+
+------------------------------------------------------------
+
+// Q5. Check if a linked list is circular
+#include <iostream>
+using namespace std;
+
+class LinkedList{
+public:
+    struct Node{ int data; Node* next; };
+    Node* head; LinkedList(){head=nullptr;}
+    void insertEnd(int val){
+        Node* newNode=new Node{val,nullptr};
+        if(!head){head=newNode; return;}
+        Node* curr=head;
+        while(curr->next) curr=curr->next;
+        curr->next=newNode;
+    }
+    bool isCircular(){
+        if(!head) return false;
+        Node* curr=head->next;
+        while(curr && curr!=head) curr=curr->next;
+        return curr==head;
+    }
+};
+
+int main(){
+    LinkedList ll;
+    int n,val; cin>>n;
+    for(int i=0;i<n;i++){cin>>val; ll.insertEnd(val);}
+    if(ll.isCircular()) cout<<"Circular\n";
+    else cout<<"Not Circular\n";
+    return 0;
+}
