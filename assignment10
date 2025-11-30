@@ -1,0 +1,448 @@
+#include <cstdio>
+
+#define MAX 20
+
+int vertexCount;
+int graph[MAX][MAX];
+
+void addEdge(int fromVertex, int toVertex){
+    graph[fromVertex][toVertex] = 1;
+    graph[toVertex][fromVertex] = 1;
+}
+
+int degreeOfVertex(int vertex){
+    int count = 0;
+    for(int i = 0; i < vertexCount; i++){
+        if(graph[vertex][i] == 1) count++;
+    }
+    return count;
+}
+
+void printAdjacentVertices(int vertex){
+    for(int i = 0; i < vertexCount; i++){
+        if(graph[vertex][i] == 1) printf("%d ", i);
+    }
+    printf("\n");
+}
+
+int numberOfEdges(){
+    int count = 0;
+    for(int i = 0; i < vertexCount; i++){
+        for(int j = i + 1; j < vertexCount; j++){
+            if(graph[i][j] == 1) count++;
+        }
+    }
+    return count;
+}
+
+int main(){
+    int edgeCount;
+    int fromVertex;
+    int toVertex;
+
+    printf("Enter number of vertices: ");
+    scanf("%d", &vertexCount);
+
+    printf("Enter number of edges: ");
+    scanf("%d", &edgeCount);
+
+    for(int i = 0; i < vertexCount; i++){
+        for(int j = 0; j < vertexCount; j++){
+            graph[i][j] = 0;
+        }
+    }
+
+    for(int i = 0; i < edgeCount; i++){
+        scanf("%d %d", &fromVertex, &toVertex);
+        addEdge(fromVertex, toVertex);
+    }
+
+    int choice;
+    while(1){
+        printf("1 degree 2 adjacent 3 edges 4 exit\n");
+        scanf("%d", &choice);
+
+        if(choice == 1){
+            scanf("%d", &fromVertex);
+            printf("%d\n", degreeOfVertex(fromVertex));
+        } 
+        else if(choice == 2){
+            scanf("%d", &fromVertex);
+            printAdjacentVertices(fromVertex);
+        } 
+        else if(choice == 3){
+            printf("%d\n", numberOfEdges());
+        } 
+        else break;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+#include <cstdio>
+
+#define MAX 50
+
+int vertexCount;
+int graph[MAX][MAX];
+int queueArr[MAX];
+int frontIndex = 0;
+int rearIndex = 0;
+int visited[MAX];
+
+void enqueue(int value){
+    queueArr[rearIndex++] = value;
+}
+
+int dequeue(){
+    return queueArr[frontIndex++];
+}
+
+int isQueueEmpty(){
+    return frontIndex == rearIndex;
+}
+
+void bfs(int startVertex){
+    for(int i = 0; i < vertexCount; i++){
+        visited[i] = 0;
+    }
+
+    enqueue(startVertex);
+    visited[startVertex] = 1;
+
+    while(!isQueueEmpty()){
+        int current = dequeue();
+        printf("%d ", current);
+
+        for(int i = 0; i < vertexCount; i++){
+            if(graph[current][i] == 1 && !visited[i]){
+                visited[i] = 1;
+                enqueue(i);
+            }
+        }
+    }
+
+    printf("\n");
+}
+
+int main(){
+    printf("Enter number of vertices: ");
+    scanf("%d", &vertexCount);
+
+    for(int i = 0; i < vertexCount; i++){
+        for(int j = 0; j < vertexCount; j++){
+            graph[i][j] = 0;
+        }
+    }
+
+    int edgeCount;
+    printf("Enter number of edges: ");
+    scanf("%d", &edgeCount);
+
+    int fromVertex, toVertex;
+    for(int i = 0; i < edgeCount; i++){
+        scanf("%d %d", &fromVertex, &toVertex);
+        graph[fromVertex][toVertex] = 1;
+        graph[toVertex][fromVertex] = 1;
+    }
+
+    int startVertex;
+    printf("Enter start vertex: ");
+    scanf("%d", &startVertex);
+
+    bfs(startVertex);
+}
+
+
+
+
+
+
+
+
+
+
+
+#include <cstdio>
+
+#define MAX 50
+
+int vertexCount;
+int graph[MAX][MAX];
+int visited[MAX];
+
+void dfs(int currentVertex){
+    visited[currentVertex] = 1;
+    printf("%d ", currentVertex);
+
+    for(int i = 0; i < vertexCount; i++){
+        if(graph[currentVertex][i] == 1 && !visited[i]){
+            dfs(i);
+        }
+    }
+}
+
+int main(){
+    printf("Enter number of vertices: ");
+    scanf("%d", &vertexCount);
+
+    for(int i = 0; i < vertexCount; i++){
+        for(int j = 0; j < vertexCount; j++){
+            graph[i][j] = 0;
+        }
+    }
+
+    int edgeCount;
+    printf("Enter number of edges: ");
+    scanf("%d", &edgeCount);
+
+    int fromVertex, toVertex;
+    for(int i = 0; i < edgeCount; i++){
+        scanf("%d %d", &fromVertex, &toVertex);
+        graph[fromVertex][toVertex] = 1;
+        graph[toVertex][fromVertex] = 1;
+    }
+
+    for(int i = 0; i < vertexCount; i++){
+        visited[i] = 0;
+    }
+
+    int startVertex;
+    printf("Enter start vertex: ");
+    scanf("%d", &startVertex);
+
+    dfs(startVertex);
+    printf("\n");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#include <cstdio>
+
+#define MAX 50
+
+struct Edge {
+    int fromVertex;
+    int toVertex;
+    int weight;
+};
+
+int vertexCount, edgeCount;
+Edge edges[MAX];
+int parentArr[MAX];
+
+int findParent(int v){
+    if(parentArr[v] == v) return v;
+    return parentArr[v] = findParent(parentArr[v]);
+}
+
+void unionSet(int a, int b){
+    a = findParent(a);
+    b = findParent(b);
+    parentArr[b] = a;
+}
+
+void sortEdges(){
+    for(int i = 0; i < edgeCount - 1; i++){
+        for(int j = 0; j < edgeCount - i - 1; j++){
+            if(edges[j].weight > edges[j+1].weight){
+                Edge temp = edges[j];
+                edges[j] = edges[j+1];
+                edges[j+1] = temp;
+            }
+        }
+    }
+}
+
+int main(){
+    printf("Enter number of vertices: ");
+    scanf("%d", &vertexCount);
+
+    printf("Enter number of edges: ");
+    scanf("%d", &edgeCount);
+
+    for(int i = 0; i < edgeCount; i++){
+        scanf("%d %d %d", &edges[i].fromVertex, &edges[i].toVertex, &edges[i].weight);
+    }
+
+    for(int i = 0; i < vertexCount; i++){
+        parentArr[i] = i;
+    }
+
+    sortEdges();
+
+    int mstWeight = 0;
+    printf("MST edges:\n");
+
+    for(int i = 0; i < edgeCount; i++){
+        int p1 = findParent(edges[i].fromVertex);
+        int p2 = findParent(edges[i].toVertex);
+
+        if(p1 != p2){
+            printf("%d - %d ( %d )\n", edges[i].fromVertex, edges[i].toVertex, edges[i].weight);
+            mstWeight += edges[i].weight;
+            unionSet(p1, p2);
+        }
+    }
+
+    printf("Total MST weight: %d\n", mstWeight);
+}
+
+
+
+
+
+
+
+
+
+
+#include <cstdio>
+
+#define MAX 50
+#define INF 999999
+
+int vertexCount;
+int graph[MAX][MAX];
+int visited[MAX];
+int keyValue[MAX];
+int parentArr[MAX];
+
+int main(){
+    printf("Enter number of vertices: ");
+    scanf("%d", &vertexCount);
+
+    for(int i = 0; i < vertexCount; i++){
+        for(int j = 0; j < vertexCount; j++){
+            scanf("%d", &graph[i][j]); 
+        }
+    }
+
+    for(int i = 0; i < vertexCount; i++){
+        visited[i] = 0;
+        keyValue[i] = INF;
+        parentArr[i] = -1;
+    }
+
+    keyValue[0] = 0;
+
+    for(int k = 0; k < vertexCount - 1; k++){
+        int minValue = INF;
+        int minIndex = -1;
+
+        for(int i = 0; i < vertexCount; i++){
+            if(!visited[i] && keyValue[i] < minValue){
+                minValue = keyValue[i];
+                minIndex = i;
+            }
+        }
+
+        visited[minIndex] = 1;
+
+        for(int v = 0; v < vertexCount; v++){
+            if(graph[minIndex][v] && !visited[v] && graph[minIndex][v] < keyValue[v]){
+                parentArr[v] = minIndex;
+                keyValue[v] = graph[minIndex][v];
+            }
+        }
+    }
+
+    int totalWeight = 0;
+    printf("MST edges:\n");
+    for(int i = 1; i < vertexCount; i++){
+        printf("%d - %d ( %d )\n", parentArr[i], i, graph[i][parentArr[i]]);
+        totalWeight += graph[i][parentArr[i]];
+    }
+
+    printf("Total MST weight: %d\n", totalWeight);
+}
+
+
+
+
+
+
+
+
+
+
+
+#include <cstdio>
+
+#define MAX 50
+#define INF 999999
+
+int vertexCount;
+int graph[MAX][MAX];
+int distanceArr[MAX];
+int visited[MAX];
+
+int findMin(){
+    int minValue = INF;
+    int minIndex = -1;
+    for(int i = 0; i < vertexCount; i++){
+        if(!visited[i] && distanceArr[i] < minValue){
+            minValue = distanceArr[i];
+            minIndex = i;
+        }
+    }
+    return minIndex;
+}
+
+int main(){
+    printf("Enter number of vertices: ");
+    scanf("%d", &vertexCount);
+
+    for(int i = 0; i < vertexCount; i++){
+        for(int j = 0; j < vertexCount; j++){
+            scanf("%d", &graph[i][j]);
+        }
+    }
+
+    int startVertex;
+    printf("Enter start vertex: ");
+    scanf("%d", &startVertex);
+
+    for(int i = 0; i < vertexCount; i++){
+        distanceArr[i] = INF;
+        visited[i] = 0;
+    }
+
+    distanceArr[startVertex] = 0;
+
+    for(int k = 0; k < vertexCount - 1; k++){
+        int u = findMin();
+        visited[u] = 1;
+
+        for(int v = 0; v < vertexCount; v++){
+            if(graph[u][v] && !visited[v] && distanceArr[u] + graph[u][v] < distanceArr[v]){
+                distanceArr[v] = distanceArr[u] + graph[u][v];
+            }
+        }
+    }
+
+    printf("Shortest distances:\n");
+    for(int i = 0; i < vertexCount; i++){
+        printf("%d -> %d\n", i, distanceArr[i]);
+    }
+}
