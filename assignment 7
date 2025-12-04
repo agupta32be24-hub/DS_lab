@@ -1,0 +1,240 @@
+ASSIGNMENT-7
+
+1.
+(A) #include <iostream>
+using namespace std;
+
+int main()
+{
+    int arr[] = {9,2,6,5,11};
+    int n = sizeof(arr) / sizeof(int);
+    int i = 0;
+    while (i != n-1)
+    {
+      int min = i;
+        for (int j = i+1; j < n; j++)
+        {
+            if (arr[j] < arr[min])
+            {
+                min = j;
+            }
+        }
+        int temp = arr[min];
+        arr[min] = arr[i];
+        arr[i] = temp;
+        i++;
+    }
+    for (int i = 0; i < n; i++)
+    {
+        cout << arr[i] << endl;
+    }
+}
+
+(B) #include <iostream>
+using namespace std;
+
+
+void insertionSort(int a[], int size) {
+    for (int i = 1; i < size; i++) {
+        int temp = a[i];
+        int prev = i - 1;
+
+  
+        while (prev >= 0 && a[prev] > temp) {
+            a[prev + 1] = a[prev];
+            prev--;
+        }
+
+        a[prev + 1] = temp;
+    }
+}
+void printArray(int a[], int size) {
+    for (int i = 0; i < size; i++)
+        cout << a[i] << " ";
+}
+
+int main() {
+    int arr[] = {10,7, 1, 5, 0};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    insertionSort(arr, n);
+
+    cout << "Sorted Array: ";
+    printArray(arr, n);
+
+    return 0;
+}
+(C) #include <iostream>
+using namespace std;
+
+
+void bubbleSort(int a[], int size) {
+    for (int pass = 0; pass < size - 1; pass++) {
+        bool didSwap = false;
+
+        for (int j = 0; j < size - pass - 1; j++) {
+            if (a[j] > a[j + 1]) {
+                swap(a[j], a[j + 1]);
+                didSwap = true;
+            }
+        }
+        if (!didSwap)
+            break;
+    }
+}
+
+void display(int a[], int size) {
+    for (int i = 0; i < size; i++)
+        cout << a[i] << " ";
+}
+
+int main() {
+    int arr[] = {12,8,2,9,3};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    bubbleSort(arr, n);
+
+    cout << "Sorted array: ";
+    display(arr, n);
+
+    return 0;
+}
+
+(D) #include <iostream>
+using namespace std;
+
+void mergeArrays(int arr[], int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    int *L = new int[n1];
+    int *R = new int[n2];
+
+    for (int i = 0; i < n1; i++)
+        L[i] = arr[left + i];
+
+    for (int j = 0; j < n2; j++)
+        R[j] = arr[mid + 1 + j];
+
+    int i = 0, j = 0, k = left;
+
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j])
+            arr[k++] = L[i++];
+        else
+            arr[k++] = R[j++];
+    }
+
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+
+    delete[] L;
+    delete[] R;
+}
+
+void mergeSort(int arr[], int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+
+        mergeArrays(arr, left, mid, right);
+    }
+}
+
+int main() {
+    int arr[] = {42, 17, 3, 99, 12, 56, 8, 73};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    mergeSort(arr, 0, n - 1);
+
+    cout << "Sorted Array: ";
+    for (int i = 0; i < n; i++)
+        cout << arr[i] << " ";
+
+    return 0;
+}
+
+(E) #include <iostream>
+using namespace std;
+
+int partitionArray(int arr[], int low, int high) {
+    int pivot = arr[high];     
+    int smallerIndex = low - 1;
+
+    for (int j = low; j < high; j++) {
+        if (arr[j] <= pivot) {
+            swap(arr[++smallerIndex], arr[j]);
+        }
+    }
+
+    swap(arr[smallerIndex + 1], arr[high]);
+    return smallerIndex + 1;
+}
+
+void quickSort(int arr[], int low, int high) {
+    if (low >= high) return;
+
+    int pivotIndex = partitionArray(arr, low, high);
+
+    quickSort(arr, low, pivotIndex - 1);
+    quickSort(arr, pivotIndex + 1, high);
+}
+
+int main() {
+    int arr[] = {45, 12, 78, 23, 56, 9, 33};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    quickSort(arr, 0, n - 1);
+
+    cout << "Sorted Array: ";
+    for (int i = 0; i < n; i++)
+        cout << arr[i] << " ";
+
+    return 0;
+}
+
+
+2. #include <iostream>
+using namespace std;
+
+void dualSelectionSort(int arr[], int size) {
+    int left = 0, right = size - 1;
+
+    while (left < right) {
+        int smallest = left;
+        int largest = right;
+
+        for (int i = left; i <= right; i++) {
+            if (arr[i] < arr[smallest])
+                smallest = i;
+            if (arr[i] > arr[largest])
+                largest = i;
+        }
+
+        swap(arr[left], arr[smallest]);
+
+        if (largest == left)
+            largest = smallest;
+
+       
+        swap(arr[right], arr[largest]);
+
+        left++;
+        right--;
+    }
+}
+
+int main() {
+    int arr[] = {12, 4, 9, 1, 6, 15, 7, 3};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    dualSelectionSort(arr, n);
+
+    cout << "Sorted array: ";
+    for (int i = 0; i < n; i++)
+        cout << arr[i] << " ";
+
+    return 0;
+}
