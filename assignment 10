@@ -1,0 +1,223 @@
+ASSIGNMENT-10
+
+#include <iostream>
+using namespace std;
+
+const int TABLE_SIZE = 100;
+
+class HashSet {
+public:
+    int table[TABLE_SIZE];
+
+    HashSet() {
+        for (int i = 0; i < TABLE_SIZE; i++)
+            table[i] = -1;  
+    }
+
+    int hash(int key) {
+        if (key < 0) key = -key;
+        return key % TABLE_SIZE;
+    }
+
+    bool insert(int key) {
+        int idx = hash(key);
+
+        for (int i = 0; i < TABLE_SIZE; i++) {
+            int cur = (idx + i) % TABLE_SIZE;
+            if (table[cur] == key) return false;   
+            if (table[cur] == -1) {                 
+                table[cur] = key;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool contains(int key) {
+        int idx = hash(key);
+
+        for (int i = 0; i < TABLE_SIZE; i++) {
+            int cur = (idx + i) % TABLE_SIZE;
+            if (table[cur] == -1) return false;     
+            if (table[cur] == key) return true;
+        }
+        return false;
+    }
+};
+
+class HashMap {
+public:
+    int key[TABLE_SIZE];
+    int val[TABLE_SIZE];
+
+    HashMap() {
+        for (int i = 0; i < TABLE_SIZE; i++) {
+            key[i] = -1;
+            val[i] = 0;
+        }
+    }
+
+    int hash(int k) {
+        if (k < 0) k = -k;
+        return k % TABLE_SIZE;
+    }
+
+    void put(int k) {
+        int idx = hash(k);
+        for (int i = 0; i < TABLE_SIZE; i++) {
+            int cur = (idx + i) % TABLE_SIZE;
+            if (key[cur] == k) {
+                val[cur]++;
+                return;
+            }
+            if (key[cur] == -1) {
+                key[cur] = k;
+                val[cur] = 1;
+                return;
+            }
+        }
+    }
+
+    int get(int k) {
+        int idx = hash(k);
+        for (int i = 0; i < TABLE_SIZE; i++) {
+            int cur = (idx + i) % TABLE_SIZE;
+            if (key[cur] == -1) return 0;
+            if (key[cur] == k) return val[cur];
+        }
+        return 0;
+    }
+};
+struct Node {
+    int data;
+    Node* next;
+    Node(int d) {
+        data = d;
+        next = NULL;
+    }
+};
+
+struct TreeNode {
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+
+    TreeNode(int d) {
+        data = d;
+        left = right = NULL;
+    }
+};
+
+bool containsDuplicate(int arr[], int n) {
+    HashSet set;
+    for (int i = 0; i < n; i++) {
+        if (set.contains(arr[i])) return true;
+        set.insert(arr[i]);
+    }
+    return false;
+}
+
+void printCommon(int A[], int n, int B[], int m) {
+    HashSet set;
+
+    for (int i = 0; i < n; i++)
+        set.insert(A[i]);
+
+    cout << "Common elements: ";
+    for (int i = 0; i < m; i++)
+        if (set.contains(B[i]))
+            cout << B[i] << " ";
+    cout << endl;
+}
+
+void printFrequency(int arr[], int n) {
+    HashMap map;
+
+    for (int i = 0; i < n; i++)
+        map.put(arr[i]);
+
+    cout << "Frequencies:\n";
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        if (map.key[i] != -1)
+            cout << map.key[i] << " → " << map.val[i] << " times\n";
+    }
+}
+
+int firstNonRepeating(int arr[], int n) {
+    HashMap map;
+
+    for (int i = 0; i < n; i++)
+        map.put(arr[i]);
+
+    for (int i = 0; i < n; i++)
+        if (map.get(arr[i]) == 1)
+            return arr[i];
+
+    return -1;
+}
+
+bool hasLoop(Node* head) {
+    HashSet set;
+
+    Node* curr = head;
+    while (curr != NULL) {
+        int addr = (long long)curr;  // convert pointer to integer
+
+        if (set.contains(addr)) return true;
+        set.insert(addr);
+
+        curr = curr->next;
+    }
+    return false;
+}
+bool findDup(TreeNode* root, HashSet &set) {
+    if (root == NULL) return false;
+
+    if (set.contains(root->data)) return true;
+    set.insert(root->data);
+
+    return findDup(root->left, set) || findDup(root->right, set);
+}
+
+bool containsTreeDuplicate(TreeNode* root) {
+    HashSet set;
+    return findDup(root, set);
+}
+
+int main() {
+    int arr1[] = {1, 2, 3, 1};
+    cout << "1. Contains Duplicate? " << (containsDuplicate(arr1, 4) ? "true" : "false") << endl;
+
+    int A[] = {1,2,3,4};
+    int B[] = {3,4,5,6};
+    cout << "2. ";
+    printCommon(A, 4, B, 4);
+
+    int arr2[] = {2,3,2,4,3,2};
+    cout << "3.\n";
+    printFrequency(arr2, 6);
+
+    int arr3[] = {4,5,1,2,0,4};
+    cout << "4. First non-repeating: " << firstNonRepeating(arr3, 6) << endl;
+
+    // 5
+    Node* n1 = new Node(1);
+    Node* n2 = new Node(2);
+    Node* n3 = new Node(3);
+    Node* n4 = new Node(4);
+    n1->next = n2; n2->next = n3; n3->next = n4; n4->next = n2;
+
+    cout << "5. Loop in list? " << (hasLoop(n1) ? "true" : "false") << endl;
+
+    
+    TreeNode* t = new TreeNode(5);
+    t->left = new TreeNode(3);
+    t->right = new TreeNode(7);
+    t->left->left = new TreeNode(3); // duplicate
+
+    cout << "6. Tree duplicates? " 
+         << (containsTreeDuplicate(t) ? "Duplicates Found" : "No Duplicates") 
+         << endl;
+
+    return 0;
+}
