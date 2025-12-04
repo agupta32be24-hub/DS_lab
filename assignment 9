@@ -1,0 +1,205 @@
+ASSIGNMENT-9
+
+1. 
+#include <iostream>
+using namespace std;
+
+const int MAX = 20;
+const int INF = 999999;
+
+class Graph {
+public:
+    int V;
+    int adj[MAX][MAX];
+
+    Graph(int v) {
+        V = v;
+        for (int i = 0; i < V; i++)
+            for (int j = 0; j < V; j++)
+                adj[i][j] = (i == j ? 0 : INF);
+    }
+
+    void addEdge(int u, int v, int w, bool directed = false) {
+        adj[u][v] = w;
+        if (!directed)
+            adj[v][u] = w;
+    }
+
+void BFS(int start) {
+        bool visited[MAX] = {false};
+        int queue[MAX], front = 0, rear = 0;
+
+        queue[rear++] = start;
+        visited[start] = true;
+
+        cout << "BFS: ";
+        while (front < rear) {
+            int u = queue[front++];
+            cout << u << " ";
+
+            for (int v = 0; v < V; v++) {
+                if (adj[u][v] != INF && !visited[v] && u != v) {
+                    visited[v] = true;
+                    queue[rear++] = v;
+                }
+            }
+        }
+        cout << endl;
+    }
+
+void DFSUtil(int u, bool visited[]) {
+        visited[u] = true;
+        cout << u << " ";
+
+        for (int v = 0; v < V; v++) {
+            if (adj[u][v] != INF && !visited[v] && u != v)
+                DFSUtil(v, visited);
+        }
+    }
+
+    void DFS(int start) {
+        bool visited[MAX] = {false};
+        cout << "DFS: ";
+        DFSUtil(start, visited);
+        cout << endl;
+    }
+
+int findParent(int parent[], int v) {
+        while (parent[v] != v)
+            v = parent[v];
+        return v;
+    }
+
+    void KruskalMST() {
+        int parent[MAX];
+        for (int i = 0; i < V; i++)
+            parent[i] = i;
+
+        cout << "Kruskal MST:\n";
+        int edges = 0, mstWeight = 0;
+
+        while (edges < V - 1) {
+            int minW = INF, a = -1, b = -1;
+
+            for (int i = 0; i < V; i++) {
+                for (int j = 0; j < V; j++) {
+                    if (adj[i][j] != INF && i != j) {
+                        if (adj[i][j] < minW) {
+                            int p1 = findParent(parent, i);
+                            int p2 = findParent(parent, j);
+
+                            if (p1 != p2) {
+                                minW = adj[i][j];
+                                a = i;
+                                b = j;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (a == -1) break;
+
+            cout << a << " - " << b << " (w=" << minW << ")\n";
+            mstWeight += minW;
+            parent[findParent(parent, a)] = findParent(parent, b);
+            edges++;
+        }
+
+        cout << "Total Weight = " << mstWeight << endl;
+    }
+ void PrimMST(int start) {
+        bool used[MAX] = {false};
+        int key[MAX], parent[MAX];
+
+        for (int i = 0; i < V; i++) {
+            key[i] = INF;
+            parent[i] = -1;
+        }
+
+        key[start] = 0;
+
+        cout << "Prim MST:\n";
+
+        for (int count = 0; count < V - 1; count++) {
+            int u = -1;
+
+            for (int v = 0; v < V; v++)
+                if (!used[v] && (u == -1 || key[v] < key[u]))
+                    u = v;
+
+            used[u] = true;
+
+            for (int v = 0; v < V; v++) {
+                if (adj[u][v] != INF && !used[v] && adj[u][v] < key[v]) {
+                    key[v] = adj[u][v];
+                    parent[v] = u;
+                }
+            }
+        }
+
+        int total = 0;
+        for (int i = 0; i < V; i++) {
+            if (parent[i] != -1) {
+                cout << parent[i] << " - " << i << " (w=" << key[i] << ")\n";
+                total += key[i];
+            }
+        }
+        cout << "Total Weight = " << total << endl;
+    }
+
+    void Dijkstra(int start) {
+        int dist[MAX];
+        bool visited[MAX] = {false};
+
+        for (int i = 0; i < V; i++)
+            dist[i] = INF;
+
+        dist[start] = 0;
+
+        for (int count = 0; count < V - 1; count++) {
+            int u = -1;
+
+            for (int i = 0; i < V; i++)
+                if (!visited[i] && (u == -1 || dist[i] < dist[u]))
+                    u = i;
+
+            visited[u] = true;
+
+            for (int v = 0; v < V; v++)
+                if (adj[u][v] != INF && dist[u] + adj[u][v] < dist[v])
+                    dist[v] = dist[u] + adj[u][v];
+        }
+
+        cout << "Dijkstra distances from " << start << ":\n";
+        for (int i = 0; i < V; i++)
+            cout << "Node " << i << ": " << dist[i] << endl;
+    }
+};
+
+int main() {
+    Graph g(5);
+
+    g.addEdge(0, 1, 2);
+    g.addEdge(0, 3, 6);
+    g.addEdge(1, 2, 3);
+    g.addEdge(1, 3, 8);
+    g.addEdge(1, 4, 5);
+    g.addEdge(2, 4, 7);
+    g.addEdge(3, 4, 9);
+
+    g.BFS(0);
+    g.DFS(0);
+
+    cout << "\n";
+    g.KruskalMST();
+
+    cout << "\n";
+    g.PrimMST(0);
+
+    cout << "\n";
+    g.Dijkstra(0);
+
+    return 0;
+}
+
